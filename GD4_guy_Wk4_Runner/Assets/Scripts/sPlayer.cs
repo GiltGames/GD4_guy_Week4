@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 
 public class sPlayer : MonoBehaviour
@@ -27,12 +29,22 @@ public class sPlayer : MonoBehaviour
 
     public bool fWall;
 
+    // Spring
+    public float vSpringForce=1000;
+
+
+
+    //game over and scores
+    public TextMeshProUGUI tGameOver;
+    public bool fGameOver = false;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        Physics.gravity *= vGravity;
+        Physics.gravity = Physics.gravity * vGravity;
     }
 
     // Update is called once per frame
@@ -43,7 +55,7 @@ public class sPlayer : MonoBehaviour
         pJump();
         pMove();
     }
-       
+       pLimits();
         
         if (transform.position.x > (vMoveLimitRight+vMoveTriggerfromRight) || Input.GetKeyDown(KeyCode.Q))
             {
@@ -55,6 +67,8 @@ public class sPlayer : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
+        Debug.Log(collision);
 
         fGrounded = true;
 
@@ -68,6 +82,21 @@ public class sPlayer : MonoBehaviour
             fWall=false;
 
         }
+
+
+        if(collision.gameObject.tag =="Lava")
+        {
+
+            pGameOver();
+        }
+
+
+        if(collision.gameObject.tag=="Spring")
+        {
+            pSpring();
+
+        }
+
 
     }
 
@@ -98,25 +127,18 @@ public class sPlayer : MonoBehaviour
 
         vNewPos = transform.position;
 
-
         if (fGrounded)
         {
-
             //facing
-            //
-
-
+            
             if (vMoveH >= 0)
             {
                 transform.rotation = Quaternion.identity;
-
-
             }
 
             if (vMoveH < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
-
             }
 
 
@@ -131,28 +153,52 @@ public class sPlayer : MonoBehaviour
 
             }
 
-
-
-
-
-
-            // rb.linearVelocity = (transform.right * vMoveSpeed * Time.deltaTime * (vMoveV + vMoveH) * (vMoveV + vMoveH));
-
-
-
-
-
-
-
         }
 
-        if (fWall = true)
-        { vMoveVector = vMoveVector / 5; }
-
-        vNewPos = vNewPos + vMoveVector;
-
         vMoveVector = new Vector3(vMoveH, 0, vMoveV) * vMoveSpeed * Time.deltaTime;
+       
+        
+        //reduce move if against wall
+
+         if (fWall == true)
+            { vMoveVector = vMoveVector / 5; }
+        
+        
+        vNewPos = vNewPos + vMoveVector;
         //Limits
+
+        pLimits();
+
+
+
+        transform.position = vNewPos;
+
+    }
+
+    public void pGameOver()
+    {
+        fGameOver = true;
+        tGameOver.text = "Game Over";
+        Time.timeScale = 0;
+
+
+
+    }
+    void pSpring()
+
+    {
+        vMoveVector = new Vector3(1, 1, 0) * vSpringForce ;
+        rb.AddForce(vMoveVector, ForceMode.Impulse);
+       
+
+        
+
+    }
+
+
+    void pLimits()
+
+    {
 
         if (vNewPos.x > vMoveLimitRight)
         {
@@ -173,11 +219,15 @@ public class sPlayer : MonoBehaviour
             vNewPos.z = vMoveLimitBottom;
         }
 
-
-        transform.position = vNewPos;
+        if (vNewPos.y > 30)
+        {
+            vNewPos.y = 30;
+        }
+        if (vNewPos.y < 0)
+        {
+            vNewPos.y = 0;
+        }
 
     }
-
-
 
 }
