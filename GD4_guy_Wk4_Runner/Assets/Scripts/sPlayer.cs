@@ -14,7 +14,7 @@ public class sPlayer : MonoBehaviour
     public float vMoveTriggerfromRight = -5;
     public Vector3 vMoveVector = Vector3.zero;
     public Vector3 vNewPos = Vector3.zero;
-
+    public float vGravity = 3;
 
 
     // Scene move variables
@@ -23,10 +23,16 @@ public class sPlayer : MonoBehaviour
     public float vShiftSp = 10;
 
 
+    //Walls
+
+    public bool fWall;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        Physics.gravity *= vGravity;
     }
 
     // Update is called once per frame
@@ -39,7 +45,7 @@ public class sPlayer : MonoBehaviour
     }
        
         
-        if (transform.position.x > (vMoveLimitRight+vMoveTriggerfromRight))
+        if (transform.position.x > (vMoveLimitRight+vMoveTriggerfromRight) || Input.GetKeyDown(KeyCode.Q))
             {
             fMove = true;
 
@@ -52,6 +58,16 @@ public class sPlayer : MonoBehaviour
 
         fGrounded = true;
 
+        if (collision.gameObject.tag =="Wall")
+        {
+
+            fWall = true;
+        }
+        else
+        {
+            fWall=false;
+
+        }
 
     }
 
@@ -82,7 +98,7 @@ public class sPlayer : MonoBehaviour
 
         vNewPos = transform.position;
 
-       
+
         if (fGrounded)
         {
 
@@ -118,17 +134,20 @@ public class sPlayer : MonoBehaviour
 
 
 
-            
 
-           // rb.linearVelocity = (transform.right * vMoveSpeed * Time.deltaTime * (vMoveV + vMoveH) * (vMoveV + vMoveH));
-        
-            
-           
-           
 
-            
-          
+            // rb.linearVelocity = (transform.right * vMoveSpeed * Time.deltaTime * (vMoveV + vMoveH) * (vMoveV + vMoveH));
+
+
+
+
+
+
+
         }
+
+        if (fWall = true)
+        { vMoveVector = vMoveVector / 5; }
 
         vNewPos = vNewPos + vMoveVector;
 
@@ -158,5 +177,7 @@ public class sPlayer : MonoBehaviour
         transform.position = vNewPos;
 
     }
+
+
 
 }

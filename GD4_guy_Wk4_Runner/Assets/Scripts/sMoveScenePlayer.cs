@@ -20,6 +20,7 @@ public class sMoveScenePlayer : MonoBehaviour
         if (sPlayer.fMove)
 
         {
+          // Time.timeScale = 0;
             transform.Translate(Vector3.left * Time.deltaTime * sPlayer.vShiftSp);
 
             vShift += Time.deltaTime * sPlayer.vShiftSp;
@@ -30,7 +31,7 @@ public class sMoveScenePlayer : MonoBehaviour
 
                 vShift = 0;
                 sPlayer.fMove = false;
-
+               // Time.timeScale = 1;
             }          
 
 

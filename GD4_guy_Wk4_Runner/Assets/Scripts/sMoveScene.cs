@@ -21,8 +21,8 @@ public class sMoveScene : MonoBehaviour
         if (sPlayer.fMove)
 
         {
-            transform.Translate(Vector3.left * Time.deltaTime * sPlayer.vShiftSp);
-           
+            //transform.Translate(Vector3.left * Time.deltaTime * sPlayer.vShiftSp);
+           transform.position -= new Vector3(Time.deltaTime * sPlayer.vShiftSp, 0, 0);  
 
           
 

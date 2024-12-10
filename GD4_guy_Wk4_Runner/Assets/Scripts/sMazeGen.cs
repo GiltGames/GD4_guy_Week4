@@ -6,12 +6,13 @@ public class sMazeGen : MonoBehaviour
 {
 
     public int vMazeSize = 4   ;
- //   public int[,] vWall = new int[10,10];
+  public int[,,] vWall = new int[10,10,2];
   //  public string[] vWallTest = new string[5];
    // public bool[,] vSpace = new bool[5, 5];
     public float vWallSpacing = 5   ;
     public GameObject vWallHor;
     public GameObject vWallVer;
+  
     public Vector3 vWallLoc;
     public Vector3 vGenStartPos;
     public int vWhichWall;
@@ -24,19 +25,19 @@ public class sMazeGen : MonoBehaviour
         for (int i = 0; i < vMazeSize; i++)
 
         {
-            // vWallTest[i] = "";
+            
             for (int j = 0; j < vMazeSize; j++)
             {
 
 
-            //    vWall[i, j] = 0;
-                //   vWall[i, j, 1] = 0;
+                vWall[i, j,0] = 0;
+                 vWall[i, j, 1] = 0;
 
-                //        vWallTest[i] = vWallTest[i] + vWall[i, j, 0];
+                     
 
             }
 
-            //Debug.Log(vWallTest[i]);
+            
 
 
 
@@ -63,28 +64,25 @@ public class sMazeGen : MonoBehaviour
         for (int i = 0; i < vMazeSize; i++)
 
         {
-           // vWallTest[i] = "";
+
             for (int j = 0; j < vMazeSize; j++)
             {
-                
-                
-          //     vWall[i, j] = 0;
-             //   vWall[i, j, 1] = 0;
 
-        //        vWallTest[i] = vWallTest[i] + vWall[i, j, 0];
-                
+
+                vWall[i, j, 0] = 0;
+                vWall[i, j, 1] = 0;
+
+
+
             }
-
-            //Debug.Log(vWallTest[i]);
-
-
-
         }
 
+            //generate wall positions and pritn  - v1
 
-        //generate wall positions
 
-        for (int i = 0; i < vMazeSize; i++)
+
+        /*
+            for (int i = 0; i < vMazeSize; i++)
 
         {
            // vWallTest[i] = "";
@@ -121,57 +119,77 @@ public class sMazeGen : MonoBehaviour
 
            // Debug.Log(vWallTest[i]);
         }
+        */
+
+            //Generte wall positions
+
+
+        for (int i = 0; i < vMazeSize; i++)
+
+        {
+            // vWallTest[i] = "";
+
+            for (int j = 0; j < vMazeSize; j++)
+            {
+                vWhichWall = Random.Range(0, 2);
+                Debug.Log("Wal set up" + i + j + vWhichWall);
+
+               
+
+                if (vWhichWall == 0)
+                {
+                    vWall[i, j, 0] = 1;
+
+                }
+
+                else
+                {
+                    vWall[i, j, 1] = 1;
+                }
+
+
+            }
+
+        }
+
 
 
         //create generated walls
-      /*  for (int i = 0; i < vMazeSize; i++)
+
+
+        for (int i = 0; i < vMazeSize; i++)
 
         {
+          
+
             for (int j = 0; j < vMazeSize; j++)
-              {
-                Debug.Log("CASE:: i =" + i + "and j=" + j);
-              /*  Debug.Log("vWall 0 = ");
-                Debug.Log(vWall[i, j, 0]);
-                    Debug.Log("   and vWall 1 = ");
-                    Debug.Log(vWall[i, j, 1]);
-
-                Debug.Log("Vertical ");
-                    Debug.Log(vWall[i, j, 0]);
-                Debug.Log("Horizontal ");
-                Debug.Log(vWall[i, j, 1]);
-                Debug.Log(" ");
-
+            {
                 
 
-
-
-
-               if (vWall[i, j] == 1)
-                     {
-                      vWallLoc = new Vector3((i + .5f) * vWallSpacing, 0, j * vWallSpacing) +vGenStartPos;
-
-                        Instantiate(vWallVert, vWallLoc, Quaternion.identity);
-
-                    Debug.Log("*****Vertical wall generated");
-                      }
-
-
-
-                else
-                
-                    
-                
+                if (vWall[i,j,0] == 1)
                 {
-                     vWallLoc = new Vector3(i * vWallSpacing, 0, (j + 0.5f) * vWallSpacing);
-                    Debug.Log("******Horizontal wall generated");
+                    vWallLoc = new Vector3((i + .5f) * vWallSpacing, 0, j * vWallSpacing) + vGenStartPos;
 
-                    Instantiate(vWallHor, vWallLoc, Quaternion.identity);
+                    Instantiate(vWallVer, vWallLoc, Quaternion.identity);
 
-                     }
-               
+                    
+                }
 
-                } 
-        }*/
+                if (vWall[i,j,1] == 1)
+                {
+                    vWallLoc = new Vector3(i * vWallSpacing, 0, (j + 0.5f) * vWallSpacing) + vGenStartPos;
+
+
+                    Instantiate(vWallHor, vWallLoc, Quaternion.Euler(0,90,0));
+                    
+
+                }
+
+
+            }
+
+
+        }
     }
 
 
