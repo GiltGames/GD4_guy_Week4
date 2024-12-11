@@ -11,11 +11,10 @@ GameObject:
   - component: {fileID: 6820924854300457347}
   - component: {fileID: 148827363879496135}
   - component: {fileID: 8398421334046210695}
-  - component: {fileID: 7392718319326232609}
-  - component: {fileID: 4475429470674290914}
   - component: {fileID: 8022387357002325128}
+  - component: {fileID: -6647546106632323681}
   m_Layer: 0
-  m_Name: Prob_Rock_Boulder_01
+  m_Name: TempRock
   m_TagString: Lava
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 34.72752, y: 0, z: -5.725258}
-  m_LocalScale: {x: 0.74, y: 0.1, z: 0.57}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.69, y: 0.69, z: 0.69}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -89,34 +88,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7392718319326232609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3441093402859818936}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84dbc77f745aec944916fd4787e1c984, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sPlayer: {fileID: 0}
-  Player: {fileID: 0}
-  vShift: 0
---- !u!114 &4475429470674290914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3441093402859818936}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f88ac5f754d205343b870784108b2ef1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OOB: 10
 --- !u!65 &8022387357002325128
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -136,5 +107,17 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.16, y: 2.6651044, z: 1.98}
-  m_Center: {x: -0, y: -0.000000059604645, z: 0}
+  m_Size: {x: 2.6651044, y: 2.6651044, z: 2.6651044}
+  m_Center: {x: 0, y: -0.000000059604645, z: 0}
+--- !u!114 &-6647546106632323681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3441093402859818936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d65c952b0eb4919469dc41a9f606a58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -106,7 +106,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Distortion_Speed: 0.5
+    - _Distortion_Speed: 0.195
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
@@ -122,11 +122,11 @@ Material:
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.00255
+    - _Speed: 0.1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _Texture_Scale: 300
+    - _Texture_Scale: 15
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

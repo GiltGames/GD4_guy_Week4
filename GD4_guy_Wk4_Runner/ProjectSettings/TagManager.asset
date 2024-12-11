@@ -7,6 +7,7 @@ TagManager:
   - Wall
   - Lava
   - Spring
+  - Rescue
   layers:
   - Default
   - TransparentFX

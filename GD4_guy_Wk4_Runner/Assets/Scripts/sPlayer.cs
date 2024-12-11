@@ -36,7 +36,17 @@ public class sPlayer : MonoBehaviour
 
     //game over and scores
     public TextMeshProUGUI tGameOver;
+    public TextMeshProUGUI tScore;
     public bool fGameOver = false;
+    public int vScore;
+
+
+
+    //animations
+    public Animator aAnim;
+    public Transform PlayerSprite;
+    public bool fRunning = false;
+
 
 
 
@@ -45,24 +55,37 @@ public class sPlayer : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         Physics.gravity = Physics.gravity * vGravity;
+        PlayerSprite = transform.Find("PlayerSprite");
+        aAnim = PlayerSprite.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!fMove)
-        { 
-        pJump();
-        pMove();
-    }
-       pLimits();
-        
+        {
+
+            if (!fGameOver)
+            {
+                pJump();
+                pMove();
+
+             }
+        }
+       
+
+        pLimits();
+
+      
+        //trigger scene move
         if (transform.position.x > (vMoveLimitRight+vMoveTriggerfromRight) || Input.GetKeyDown(KeyCode.Q))
             {
             fMove = true;
 
         }
-
+       
+        //reset child sprite to zero
+        PlayerSprite.transform.position = transform.position;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -74,7 +97,7 @@ public class sPlayer : MonoBehaviour
 
         if (collision.gameObject.tag =="Wall")
         {
-
+            
             fWall = true;
         }
         else
@@ -91,17 +114,31 @@ public class sPlayer : MonoBehaviour
         }
 
 
-        if(collision.gameObject.tag=="Spring")
+
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Spring")
         {
             pSpring();
 
         }
 
+        if (other.gameObject.tag == "Rescue")
+
+        {
+            Destroy(other.gameObject);
+            vScore++;
+            tScore.text = vScore.ToString();
+        }
 
     }
 
 
-    void pJump()
+
+void pJump()
     {
 
         if(Input.GetKeyDown(KeyCode.Space))
@@ -111,6 +148,7 @@ public class sPlayer : MonoBehaviour
             {
                 rb.AddForce(Vector3.up * vJumpForce,ForceMode.Impulse);
                 fGrounded=false;
+                aAnim.SetTrigger("Jump_trig");
             }
 
 
@@ -127,51 +165,78 @@ public class sPlayer : MonoBehaviour
 
         vNewPos = transform.position;
 
+        if(transform.position.y <.1f)
+        {
+            fGrounded = true;
+
+        }
         if (fGrounded)
         {
-            //facing
-            
+            //facing and animiation
+
+            fRunning = false;
+
             if (vMoveH >= 0)
             {
                 transform.rotation = Quaternion.identity;
+                  
+                if (vMoveH >0)
+                {
+                    fRunning = true;
+
+                }
+
             }
 
             if (vMoveH < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
+                fRunning = true;
             }
 
 
             if (vMoveV > 0)
             {
                 transform.rotation = Quaternion.Euler(0, -90, 0);
-
+                fRunning = true;
             }
             if (vMoveV < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 90, 0);
-
+                fRunning = true;
             }
 
         }
 
-        vMoveVector = new Vector3(vMoveH, 0, vMoveV) * vMoveSpeed * Time.deltaTime;
+        if (fRunning)
+        {
+            aAnim.SetFloat("Speed_f", 1f);
+
+        }
+        else
+        {
+            aAnim.SetFloat("Speed_f", 0f);
+        }
+
+
+
+        vMoveVector = new Vector3((vMoveH*vMoveH)+(vMoveV * vMoveV), 0, 0).normalized * vMoveSpeed  * Time.deltaTime;
        
         
         //reduce move if against wall
 
          if (fWall == true)
-            { vMoveVector = vMoveVector / 5; }
+            { vMoveVector = vMoveVector / 1; }
         
         
-        vNewPos = vNewPos + vMoveVector;
-        //Limits
+        
+        
+        transform.Translate(vMoveVector);
+       
 
-        pLimits();
+       
 
 
-
-        transform.position = vNewPos;
 
     }
 
@@ -179,15 +244,16 @@ public class sPlayer : MonoBehaviour
     {
         fGameOver = true;
         tGameOver.text = "Game Over";
-        Time.timeScale = 0;
-
+        aAnim.SetInteger("DeathType_int", 1);
+        
+        aAnim.SetBool("Death_b", true);
 
 
     }
     void pSpring()
 
     {
-        vMoveVector = new Vector3(1, 1, 0) * vSpringForce ;
+        vMoveVector = new Vector3(.5f, 1, 0) * vSpringForce ;
         rb.AddForce(vMoveVector, ForceMode.Impulse);
        
 
@@ -199,6 +265,9 @@ public class sPlayer : MonoBehaviour
     void pLimits()
 
     {
+        vNewPos = transform.position;
+
+                
 
         if (vNewPos.x > vMoveLimitRight)
         {
@@ -219,15 +288,15 @@ public class sPlayer : MonoBehaviour
             vNewPos.z = vMoveLimitBottom;
         }
 
-        if (vNewPos.y > 30)
+        if (vNewPos.y > 50)
         {
-            vNewPos.y = 30;
+            vNewPos.y = 50;
         }
         if (vNewPos.y < 0)
         {
             vNewPos.y = 0;
         }
-
+        transform.position = vNewPos;
     }
 
 }
