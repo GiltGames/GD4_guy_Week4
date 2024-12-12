@@ -13,7 +13,7 @@ public class sOOBDestroy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.x < OOB)
+        if (transform.position.x < OOB || transform.position.y < -OOB)
         {
             Destroy(gameObject);
 

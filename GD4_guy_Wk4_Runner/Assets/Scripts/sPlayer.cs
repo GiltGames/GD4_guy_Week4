@@ -46,6 +46,15 @@ public class sPlayer : MonoBehaviour
     public Animator aAnim;
     public Transform PlayerSprite;
     public bool fRunning = false;
+    public ParticleSystem Dirt;
+
+
+    //sound
+    public AudioSource aPlayer;
+    public AudioClip vJumpSound;
+    public AudioClip vDieSound;
+    public AudioClip vThanks;
+
 
 
 
@@ -57,7 +66,10 @@ public class sPlayer : MonoBehaviour
         Physics.gravity = Physics.gravity * vGravity;
         PlayerSprite = transform.Find("PlayerSprite");
         aAnim = PlayerSprite.gameObject.GetComponent<Animator>();
-    }
+
+        aPlayer = GetComponent<AudioSource>();
+            
+            }
 
     // Update is called once per frame
     void Update()
@@ -132,6 +144,11 @@ public class sPlayer : MonoBehaviour
             Destroy(other.gameObject);
             vScore++;
             tScore.text = vScore.ToString();
+
+            aPlayer.clip = vThanks;
+
+            aPlayer.Play();
+
         }
 
     }
@@ -146,9 +163,14 @@ void pJump()
 
             if (fGrounded)
             {
+                rb.linearVelocity = Vector3.zero;
                 rb.AddForce(Vector3.up * vJumpForce,ForceMode.Impulse);
                 fGrounded=false;
                 aAnim.SetTrigger("Jump_trig");
+                aPlayer.clip = vJumpSound;
+
+                aPlayer.Play();
+
             }
 
 
@@ -208,14 +230,27 @@ void pJump()
 
         }
 
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        {
+            if (fGrounded)
+            {
+                Dirt.Play();
+            }
+        }
+
         if (fRunning)
         {
             aAnim.SetFloat("Speed_f", 1f);
+            
+            
+
+
 
         }
         else
         {
             aAnim.SetFloat("Speed_f", 0f);
+            Dirt.Stop();    
         }
 
 
@@ -248,6 +283,9 @@ void pJump()
         
         aAnim.SetBool("Death_b", true);
 
+        aPlayer.clip = vDieSound;
+
+        aPlayer.Play();
 
     }
     void pSpring()

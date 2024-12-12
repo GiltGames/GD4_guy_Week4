@@ -18,6 +18,7 @@ public class sMazeGen : MonoBehaviour
     public float vWallSpacing = 5;
     public GameObject vWallHor;
     public GameObject vWallVer;
+    public GameObject vLavaWall;
     public GameObject vLava;
     public GameObject vSpring;
     public int vMazeType = 0;
@@ -29,9 +30,11 @@ public class sMazeGen : MonoBehaviour
     [SerializeField] int i;
     [SerializeField] int j;
     [SerializeField] int vVisitTotal;
+    public GameObject vMarker;
 
 
     public GameObject vRescue;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -60,6 +63,8 @@ public class sMazeGen : MonoBehaviour
         vGenStartPos = new Vector3(transform.position.x, 0, transform.position.z);
         pMazeGen();
 
+        vWallSpacing = vWallHor.GetComponent<BoxCollider>().size.z;
+
 
     }
 
@@ -77,55 +82,11 @@ public class sMazeGen : MonoBehaviour
     {
 
         //reset array
-
+        vWallSpacing = vWallHor.GetComponent<BoxCollider>().size.z;
 
         pResetArray();
 
-        //generate wall positions and pritn  - v1
-
-
-
-        /*
-            for (int i = 0; i < vMazeSize; i++)
-
-        {
-           // vWallTest[i] = "";
-
-              for (int j = 0; j < vMazeSize; j++)
-              {
-                  vWhichWall = Random.Range(0, 2);
-                  Debug.Log("Wal set up" + i + j + vWhichWall);
-               
-                //  vWall[i, j] = vWhichWall;
-                
-                if (vWhichWall == 0)
-                {
-                    vWallLoc = new Vector3((i + .5f) * vWallSpacing, 0, j * vWallSpacing) + vGenStartPos;
-
-                    Instantiate(vWallVer, vWallLoc, Quaternion.identity);
-
-                    Debug.Log("Vertical Wall");
-                }
-
-                else
-                {
-                    vWallLoc = new Vector3(i * vWallSpacing, 0, (j + 0.5f) * vWallSpacing) +vGenStartPos;
-                   
-
-                    Instantiate(vWallHor, vWallLoc, Quaternion.identity);
-                    Debug.Log("Horizontal Wall");
-
-                }
-
-
-                //           vWallTest[i] = vWallTest[i] + vWall[i, j, 0];
-            }
-
-           // Debug.Log(vWallTest[i]);
-        }
-        */
-
-        //Generte wall positions
+      
 
         if (vMazeType == 0)
         {
@@ -253,10 +214,16 @@ public class sMazeGen : MonoBehaviour
 
         Debug.Log("Start Maze Generation");
 
-        i = Random.Range(1, vMazeSize );
-        j = Random.Range(1, vMazeSize );
+        //  i = Random.Range(1, vMazeSize );
+        //  j = Random.Range(1, vMazeSize );
 
-        Debug.Log("start at " + i + j);
+        // Start at 1,1 and see o/
+
+        i = 1;
+        j = 1;
+
+
+       // Debug.Log("start at " + i + j);
 
 
         vVisit[i, j] = true;
@@ -265,7 +232,7 @@ public class sMazeGen : MonoBehaviour
 
         //while not all spaces have been checked
 
-        while (vVisitTotal < (vMazeSize) * (vMazeSize))
+        while (vVisitTotal < (vMazeSize-1) * (vMazeSize-1))
                 {
                     int vRandomWall = Random.Range(0, 4);
                     // Up 0, Right 1 Down 2  Left 3
@@ -283,22 +250,37 @@ public class sMazeGen : MonoBehaviour
                         vRandomWall = 1;
                     }
 
-                    if (i == vMazeSize && vRandomWall == 0)
+                    if (i == vMazeSize-1 && vRandomWall == 0)
                     {
                         vRandomWall = 2;
                     }
 
-                    if (j == vMazeSize && vRandomWall == 1)
+                    if (j == vMazeSize-1 && vRandomWall == 1)
                     {
                         vRandomWall = 3;
                     }
 
-                    Debug.Log("Start cell " + i + j);
-                    Debug.Log("Random Wall " + vRandomWall);
+               //     Debug.Log("Start cell " + i + j);
+               //     Debug.Log("Random Wall " + vRandomWall);
 
-                    //Walk into next space
+            //Walk into next space
+            int vLavaorSpace;
 
-                    switch (vRandomWall)
+            if (Random.Range(0, 1f) < vLavaChance)
+            {
+                vLavaorSpace = 2;
+
+
+            }
+
+            else
+            {
+                vLavaorSpace = 0;
+            }
+
+
+
+            switch (vRandomWall)
                     {
 
                         case 0:
@@ -322,33 +304,43 @@ public class sMazeGen : MonoBehaviour
 
                     }
 
-                    Debug.Log("Spaces vistied " + vVisitTotal);
-                    Debug.Log("new cell " + newi + newj);
+                  //  Debug.Log("Spaces vistied " + vVisitTotal);
+                  //  Debug.Log("new cell " + newi + newj);
                     if (vVisit[newi, newj] == false)
                         {
                             vVisitTotal = vVisitTotal + 1;
-                            Debug.Log("New Cell - total now "+vVisitTotal);
+                            Debug.Log("New Cell - "+newi+" : "+newj);
+                Debug.Log("RandomWall was " + vRandomWall);
+
 
                             vVisit[newi, newj] = true;
 
+                                 //Is wall lava instead of empty?
+
+                         
+                                 ///destroy wall
                             switch (vRandomWall)
 
                             {
                                 case 0:
 
-                                    vWall[i, j, 0] = 0;
-
+                                    vWall[i, j, 0] = vLavaorSpace;
+                        Debug.Log("Wall down" + i+":" + j +" 0");
                                     break;
 
                                 case 1:
-                                    vWall[i, j, 1] = 0;
-                                    break;
+                                    vWall[i, j, 1] = vLavaorSpace;
+                        Debug.Log("Wall down" + i+":" + j+" 1");
+
+                        break;
                                 case 2:
-                                    vWall[newi, j, 0] = 0;
-                                    break;
+                                    vWall[newi, j, 0] = vLavaorSpace;
+                        Debug.Log("Wall down" + newi + ":" + j + " 0");
+                        break;
                                 case 3:
-                                    vWall[i, newj, 1] = 0;
-                                    break;
+                                    vWall[i, newj, 1] = vLavaorSpace;
+                        Debug.Log("Wall down" + i + ":" + newj + " 1");
+                        break;
 
 
 
@@ -361,9 +353,9 @@ public class sMazeGen : MonoBehaviour
                     j = newj;
                     //Count spaces visited
                     vVisitTotal = 0;
-                    for (int k = 1; k <= vMazeSize ; k++)
+                    for (int k = 1; k <= vMazeSize-1 ; k++)
                             {
-                                for (int l = 1; l <= vMazeSize; l++)
+                                for (int l = 1; l <= vMazeSize-1; l++)
                                 {
                                     if (vVisit[k, l])
                                         { vVisitTotal++; }
@@ -383,14 +375,14 @@ public class sMazeGen : MonoBehaviour
             vWall[0, k, 1] = 0;
             vWall[0, k, 0] = 1;
             vWall[k, 0, 0] = 0;
-            vWall[k, vMazeSize-1, 1] = 1;
-            vWall[vMazeSize-1, k, 0] = 1;
-            vWall[k, vMazeSize-1, 0] = 0;
-            vWall[vMazeSize-1, k, 1] = 0;
+            vWall[k, vMazeSize, 1] = 1;
+            vWall[vMazeSize, k, 0] = 1;
+            vWall[k, vMazeSize, 0] = 0;
+            vWall[vMazeSize, k, 1] = 0;
         }
 
-        vWall[0, Random.Range(1, vMazeSize), 0] = 0;
-        vWall[vMazeSize-1, Random.Range(1, vMazeSize), 0] = 0;
+        vWall[0, Random.Range(1, vMazeSize-1), 0] = 0;
+        vWall[vMazeSize-1, Random.Range(1, vMazeSize-1), 0] = 0;
 
 
         //add Lava
@@ -415,11 +407,13 @@ public class sMazeGen : MonoBehaviour
             {
 
 
+                //normal walls
+
                 if (vWall[i, j, 0] == 1)
                 {
                     vWallLoc = new Vector3((i + .5f) * vWallSpacing, 0 , j * vWallSpacing) + vGenStartPos;
 
-                    Instantiate(vWallVer, vWallLoc, Quaternion.identity);
+                    Instantiate(vWallHor, vWallLoc, Quaternion.identity);
 
 
                 }
@@ -434,6 +428,39 @@ public class sMazeGen : MonoBehaviour
 
                 }
 
+                //lava walls
+                //
+
+                if (vWall[i, j, 0] == 2)
+                {
+                    vWallLoc = new Vector3((i +.5f) * vWallSpacing, 0, (j+.5f) * vWallSpacing) + vGenStartPos;
+
+                    Instantiate(vLavaWall, vWallLoc, Quaternion.identity);
+
+
+                }
+
+                if (vWall[i, j, 1] == 2)
+                {
+                    vWallLoc = new Vector3((i+.5f) * vWallSpacing, 0, (j + .5f) * vWallSpacing) + vGenStartPos;
+
+
+                    Instantiate(vLavaWall, vWallLoc, Quaternion.Euler(0, 90, 0));
+
+
+                }
+
+                /*
+                if (vVisit[i,j])
+                {
+                    vWallLoc = new Vector3((i ) * vWallSpacing, 0, (j) * vWallSpacing) + vGenStartPos;
+
+
+                    Instantiate(vMarker, vWallLoc, Quaternion.Euler(0, 90, 0));
+
+                }
+
+
                 if (vSpace[i, j] == 1)
                 {
 
@@ -442,14 +469,16 @@ public class sMazeGen : MonoBehaviour
                     Instantiate(vLava, vWallLoc, Quaternion.identity);
                 }
 
-                if (vSpace[i, j] == 2)
+                //change to mark spaces
+
+                if (vSpace[i, j] <5)
                 {
 
                     vWallLoc = new Vector3(i * vWallSpacing, -.7f, (j) * vWallSpacing) + vGenStartPos;
 
                     Instantiate(vSpring, vWallLoc, Quaternion.identity);
                 }
-
+               */
 
                 if (vSpace[i, j] == 3)
                 {

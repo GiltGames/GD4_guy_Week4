@@ -7,6 +7,11 @@ public class sMoveScenePlayer : MonoBehaviour
     public float vShift;
     [SerializeField] Transform Spawner;
 
+    //speed up Lava
+
+    public sLavaAdvance _sLavaAdvance;
+    public float vLavaSpeedup;
+
     //Call MazeGen
     public sMazeGen sMazeGen;
     [SerializeField] Vector3 vGenStartPosfromMove;
@@ -42,6 +47,7 @@ public class sMoveScenePlayer : MonoBehaviour
                 sMazeGen.vGenStartPos = vGenStartPosfromMove;
 
                 sMazeGen.pMazeGen();
+                _sLavaAdvance.vLavaAdvanceSp = _sLavaAdvance.vLavaAdvanceSp *vLavaSpeedup;
 
             }          
 
