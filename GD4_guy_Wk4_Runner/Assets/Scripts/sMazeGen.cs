@@ -11,11 +11,13 @@ public class sMazeGen : MonoBehaviour
     public int[,,] vWall = new int[10, 10, 2];
     public int[,] vSpace = new int[10, 10];
 
-    [SerializeField] float vLavaChance = .1f;
-    [SerializeField] float vSpringChance = 0.05f;
+    [SerializeField] float vLavaChance = .15f;
+ //   [SerializeField] float vSpringChance = 0.1f;
     //  public string[] vWallTest = new string[5];
     // public bool[,] vSpace = new bool[5, 5];
     public float vWallSpacing = 5;
+    public float vLavaspacingAdj = 0.45f;
+
     public GameObject vWallHor;
     public GameObject vWallVer;
     public GameObject vLavaWall;
@@ -142,10 +144,11 @@ public class sMazeGen : MonoBehaviour
 
                 }
 
-                if (tvRand > (1 - vSpringChance))
+               /* if (tvRand > (1 - vSpringChance))
                 {
                     vSpace[i, j] = 2;
                 }
+               */
             }
 
 
@@ -433,7 +436,7 @@ public class sMazeGen : MonoBehaviour
 
                 if (vWall[i, j, 0] == 2)
                 {
-                    vWallLoc = new Vector3((i +.5f) * vWallSpacing, 0, (j+.5f) * vWallSpacing) + vGenStartPos;
+                    vWallLoc = new Vector3((i + vLavaspacingAdj) * vWallSpacing, 0, (j+ vLavaspacingAdj) * vWallSpacing) + vGenStartPos;
 
                     Instantiate(vLavaWall, vWallLoc, Quaternion.identity);
 
@@ -442,7 +445,7 @@ public class sMazeGen : MonoBehaviour
 
                 if (vWall[i, j, 1] == 2)
                 {
-                    vWallLoc = new Vector3((i+.5f) * vWallSpacing, 0, (j + .5f) * vWallSpacing) + vGenStartPos;
+                    vWallLoc = new Vector3((i+ vLavaspacingAdj)* vWallSpacing, 0, (j + vLavaspacingAdj) * vWallSpacing) + vGenStartPos;
 
 
                     Instantiate(vLavaWall, vWallLoc, Quaternion.Euler(0, 90, 0));
@@ -468,17 +471,17 @@ public class sMazeGen : MonoBehaviour
 
                     Instantiate(vLava, vWallLoc, Quaternion.identity);
                 }
+*/
+                //change to jetpac
 
-                //change to mark spaces
-
-                if (vSpace[i, j] <5)
+                if (vSpace[i, j] ==2)
                 {
 
-                    vWallLoc = new Vector3(i * vWallSpacing, -.7f, (j) * vWallSpacing) + vGenStartPos;
+                    vWallLoc = new Vector3(i * vWallSpacing,1, (j) * vWallSpacing) + vGenStartPos;
 
                     Instantiate(vSpring, vWallLoc, Quaternion.identity);
                 }
-               */
+               
 
                 if (vSpace[i, j] == 3)
                 {
@@ -497,9 +500,20 @@ public class sMazeGen : MonoBehaviour
 
     public void pAddRescue()
     {
-        i =Random.Range(1,vMazeSize);
-        j = Random.Range(1, vMazeSize);
+        i =Random.Range(1,vMazeSize-1);
+        j = Random.Range(1, vMazeSize-1);
         vSpace[i, j] = 3;
+
+
+        // add jetpac not if rescue space
+        i = Random.Range(1, vMazeSize-1);
+        j = Random.Range(1, vMazeSize-1);
+
+       
+        
+            vSpace[i, j] = 2;
+        
+
 
 
     }

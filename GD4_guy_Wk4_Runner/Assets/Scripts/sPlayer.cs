@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class sPlayer : MonoBehaviour
 {
@@ -17,13 +19,16 @@ public class sPlayer : MonoBehaviour
     public Vector3 vMoveVector = Vector3.zero;
     public Vector3 vNewPos = Vector3.zero;
     public float vGravity = 3;
+    public GameObject JetPac;
+    public bool fJetPac;
+
 
 
     // Scene move variables
     public bool fMove = false;
     public float vShiftTotal = 20;
     public float vShiftSp = 10;
-
+    public float vSpeedBoost = 1.5f;
 
     //Walls
 
@@ -74,6 +79,20 @@ public class sPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       
+        //reload
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.Scene scene = GetComponent<UnityEngine.SceneManagement.Scene>();
+            Physics.gravity = Physics.gravity / vGravity;
+            SceneManager.LoadScene(scene.buildIndex);
+
+
+        }
+
+
+        
+        // If scene is shifting, isable input
         if (!fMove)
         {
 
@@ -106,6 +125,7 @@ public class sPlayer : MonoBehaviour
         Debug.Log(collision);
 
         fGrounded = true;
+        rb.linearVelocity = Vector3.zero;
 
         if (collision.gameObject.tag =="Wall")
         {
@@ -134,6 +154,7 @@ public class sPlayer : MonoBehaviour
     {
         if (other.gameObject.tag == "Spring")
         {
+           Destroy(other.gameObject);
             pSpring();
 
         }
@@ -161,6 +182,15 @@ void pJump()
         if(Input.GetKeyDown(KeyCode.Space))
         {
 
+            if(!fGrounded && fJetPac)
+
+            {
+                fJetPac = false;
+                fGrounded=true;
+                JetPac.SetActive(false);
+            }
+
+
             if (fGrounded)
             {
                 rb.linearVelocity = Vector3.zero;
@@ -185,6 +215,7 @@ void pJump()
         float vMoveV = Input.GetAxis("Vertical");
         float vMoveH = Input.GetAxis("Horizontal");
 
+
         vNewPos = transform.position;
 
         if(transform.position.y <.1f)
@@ -192,7 +223,7 @@ void pJump()
             fGrounded = true;
 
         }
-        if (fGrounded)
+        if (fGrounded || fJetPac)
         {
             //facing and animiation
 
@@ -256,7 +287,13 @@ void pJump()
 
 
         vMoveVector = new Vector3((vMoveH*vMoveH)+(vMoveV * vMoveV), 0, 0).normalized * vMoveSpeed  * Time.deltaTime;
-       
+
+        //increase speed if shift is pressed
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            {
+            vMoveVector = vMoveVector* vSpeedBoost;
+            }
         
         //reduce move if against wall
 
@@ -278,6 +315,7 @@ void pJump()
     public void pGameOver()
     {
         fGameOver = true;
+        JetPac.SetActive(false);
         tGameOver.text = "Game Over";
         aAnim.SetInteger("DeathType_int", 1);
         
@@ -289,11 +327,12 @@ void pJump()
 
     }
     void pSpring()
-
+        //this is now the jetpac
     {
-        vMoveVector = new Vector3(.5f, 1, 0) * vSpringForce ;
-        rb.AddForce(vMoveVector, ForceMode.Impulse);
-       
+        
+        JetPac.SetActive(true);
+        fJetPac = true;
+        
 
         
 
