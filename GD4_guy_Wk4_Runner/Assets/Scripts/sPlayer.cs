@@ -1,7 +1,8 @@
 using JetBrains.Annotations;
 using TMPro;
-using UnityEditor.SearchService;
+
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 
 public class sPlayer : MonoBehaviour
@@ -44,6 +45,11 @@ public class sPlayer : MonoBehaviour
     public TextMeshProUGUI tScore;
     public bool fGameOver = false;
     public int vScore;
+    public bool fGameStarted = false;
+    public float vPlayerStartPos = 51;
+    public float vPlayerWalkinPos = 35;
+    public TextMeshProUGUI tIntrotext;
+    public TextMeshProUGUI tPressKeytext;
 
 
 
@@ -73,50 +79,90 @@ public class sPlayer : MonoBehaviour
         aAnim = PlayerSprite.gameObject.GetComponent<Animator>();
 
         aPlayer = GetComponent<AudioSource>();
+        transform.rotation = Quaternion.identity;
+        transform.position = new Vector3(vPlayerWalkinPos, 0, -10);
+        fGameStarted = false;
+        tPressKeytext.enabled = false;
             
             }
 
     // Update is called once per frame
     void Update()
     {
-       
-        //reload
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (fGameStarted)
         {
-            UnityEngine.SceneManagement.Scene scene = GetComponent<UnityEngine.SceneManagement.Scene>();
-            Physics.gravity = Physics.gravity / vGravity;
-            SceneManager.LoadScene(scene.buildIndex);
+            //reload
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                
+                Physics.gravity = Physics.gravity / vGravity;
+                SceneManager.LoadScene(0);
 
+
+            }
+
+
+
+            // If scene is shifting, isable input
+            if (!fMove)
+            {
+
+                if (!fGameOver)
+                {
+                    pJump();
+                    pMove();
+
+                }
+            }
+
+
+            pLimits();
+
+
+            //trigger scene move
+            if (transform.position.x > (vMoveLimitRight + vMoveTriggerfromRight) || Input.GetKeyDown(KeyCode.Q))
+            {
+                fMove = true;
+
+            }
+
+            //reset child sprite to zero
+            PlayerSprite.transform.position = transform.position;
 
         }
-
-
-        
-        // If scene is shifting, isable input
-        if (!fMove)
+        else
         {
 
-            if (!fGameOver)
+
+
+
+            if ((transform.position.x < vPlayerStartPos))
+
             {
-                pJump();
-                pMove();
+                vMoveVector = new Vector3(vMoveSpeed * Time.deltaTime/2, 0, 0);
+                transform.Translate(vMoveVector);
 
-             }
+            }
+            else {
+
+                tPressKeytext.enabled = true;
+
+                aAnim.SetBool("Into_b", true);
+
+                if (Input.anyKeyDown)
+                {
+
+                    fGameStarted = true;
+                   tIntrotext.enabled = false;
+                    tPressKeytext.enabled = false;
+
+                }
+
+            }
+
+
+
         }
-       
-
-        pLimits();
-
-      
-        //trigger scene move
-        if (transform.position.x > (vMoveLimitRight+vMoveTriggerfromRight) || Input.GetKeyDown(KeyCode.Q))
-            {
-            fMove = true;
-
-        }
-       
-        //reset child sprite to zero
-        PlayerSprite.transform.position = transform.position;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -139,7 +185,7 @@ public class sPlayer : MonoBehaviour
         }
 
 
-        if(collision.gameObject.tag =="Lava")
+        if(collision.gameObject.tag =="Lava" && fGameStarted)
         {
 
             pGameOver();
@@ -164,7 +210,7 @@ public class sPlayer : MonoBehaviour
         {
             Destroy(other.gameObject);
             vScore++;
-            tScore.text = vScore.ToString();
+            tScore.text = "Score: "+vScore.ToString();
 
             aPlayer.clip = vThanks;
 

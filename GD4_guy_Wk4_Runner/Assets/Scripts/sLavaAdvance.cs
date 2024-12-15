@@ -27,26 +27,29 @@ public class sLavaAdvance : MonoBehaviour
     void Update()
     {
 
-        //move lava
-        transform.Translate(new Vector3(vLavaAdvanceSp*Time.deltaTime,0,0),Space.World);
-        
-        //reset if it falls too far behind
-        if (transform.position.x < vLavaLimit)
+        if (sPlayer.fGameStarted)
         {
-            transform.position = new Vector3(vLavaLimit,transform.position.y, transform.position.z);
 
+            //move lava
+            transform.Translate(new Vector3(vLavaAdvanceSp * Time.deltaTime, 0, 0), Space.World);
+
+            //reset if it falls too far behind
+            if (transform.position.x < vLavaLimit)
+            {
+                transform.position = new Vector3(vLavaLimit, transform.position.y, transform.position.z);
+
+            }
+
+
+            //Throw rock
+
+            if (vThrownTimer < 0)
+            {
+                pThrowRock();
+                vThrownTimer = vThrowInterval;
+            }
+            vThrownTimer -= Time.deltaTime;
         }
-
-
-        //Throw rock
-
-        if (vThrownTimer < 0)
-        {
-            pThrowRock();
-            vThrownTimer = vThrowInterval;
-        }
-        vThrownTimer -= Time.deltaTime;
-
     }
 
     private void OnTriggerEnter(Collider other)
